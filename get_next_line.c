@@ -11,10 +11,12 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h> // printf
 
 char	*get_next_line(int fd);
 
 char	*get_next_line(int fd)
 {
+	printf("fd received: %d\n", fd);
 	return ("");
 }
