@@ -21,5 +21,6 @@
 # include <unistd.h> // read
 
 char	*get_next_line(int fd);
+void	*ft_calloc(size_t nmemb, size_t size);
 
 #endif

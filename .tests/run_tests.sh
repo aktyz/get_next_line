@@ -6,7 +6,7 @@
 #    By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/22 04:59:54 by zslowian          #+#    #+#              #
-#    Updated: 2024/05/22 21:41:01 by zslowian         ###   ########.fr        #
+#    Updated: 2024/09/17 16:22:58 by zslowian         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ cp ../get_next_line.h ./get_next_line.h
 
 cc -Wall -Wextra -Werror -D BUFFER_SIZE=3 *.c -o tests.out
 
-./tests.out
+valgring --leak-check=full ./tests.out
 
 rm ./tests.out
 rm ./get_next_line.c
