@@ -13,6 +13,8 @@
 #include "get_next_line.h"
 
 void	*ft_calloc(size_t nmemb, size_t size);
+static size_t	ft_strlen(const char *str);
+size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 
 void	*ft_calloc(size_t nmemb, size_t size)
 {
@@ -33,4 +35,40 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	while (t_size--)
 		((char *)ptr)[t_size] = 0;
 	return (ptr);
+}
+
+size_t	ft_strlcpy(char *dst, const char *src, size_t size)
+{
+	size_t	len;
+	size_t	i;
+
+	len = ft_strlen(src);
+	i = 0;
+	if (size)
+	{
+		while (i < size - 1 && src[i] != '\0')
+		{
+			dst[i] = src[i];
+			i++;
+		}
+		dst[i] = '\0';
+	}
+	return (len);
+}
+
+/**
+ * Function copied from libft, returning the length of a string
+ *
+ */
+static size_t	ft_strlen(const char *str)
+{
+	size_t	len;
+
+	len = 0;
+	while (*str != '\0')
+	{
+		len++;
+		str++;
+	}
+	return (len);
 }
