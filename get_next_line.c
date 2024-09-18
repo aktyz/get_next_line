@@ -15,13 +15,15 @@
 
 char			*get_next_line(int fd);
 static char		*laddle_from_fd(int fd);
-static int		is_new_line(int start_index, char *buffer);
+static int		is_new_line(char *buffer);
+static char		*new_string(char *old_string, size_t new_string_length);
 
 char	*get_next_line(int fd)
 {
 	static char	*basin_buffer;
 
 	basin_buffer = laddle_from_fd(fd);
+	printf("\"%s\"\n", basin_buffer);
 	return (basin_buffer);
 }
 
@@ -35,7 +37,6 @@ static char	*laddle_from_fd(int fd)
 {
 	int		bytes_read;
 	char	*cup_buffer;
-	char	*shorter_cup_buffer;
 	int		nl_position;
 
 	cup_buffer = ft_calloc (BUFFER_SIZE + 1, sizeof(char));
@@ -44,17 +45,27 @@ static char	*laddle_from_fd(int fd)
 	bytes_read = read(fd, cup_buffer, BUFFER_SIZE);
 	if (bytes_read <= 0)
 		return (free(cup_buffer), NULL);
-	nl_position = is_new_line(0, cup_buffer);
+	nl_position = is_new_line(cup_buffer);
 	if (nl_position != (-1) && nl_position < BUFFER_SIZE)
-	{ //reallocate the memory - TODO: extract to utils
-		shorter_cup_buffer = ft_calloc (nl_position + 1, sizeof(char));
-		if (shorter_cup_buffer == NULL)
-			return (NULL);
-		ft_strlcpy(shorter_cup_buffer, cup_buffer, nl_position + 1);
-		return (free(cup_buffer), shorter_cup_buffer);
-	}
-	else
-		return (cup_buffer);
+		cup_buffer = new_string(cup_buffer, nl_position + 1);
+	return (cup_buffer);
+}
+
+/** Function takes the previously allocated memory,
+ * copies n size of it to the newly allocated one
+ * frees the memory of the larger pointer and returns
+ * pointer to the new bit of memory
+ *
+ */
+static char	*new_string(char *old_string, size_t new_string_length)
+{
+	char	*new_string;
+
+	new_string = ft_calloc((int) new_string_length, sizeof(char));
+	if (new_string == NULL)
+		return (NULL);
+	ft_strlcpy(new_string, old_string, (int) new_string_length);
+	return (free(old_string), new_string);
 }
 
 /**
@@ -64,12 +75,16 @@ static char	*laddle_from_fd(int fd)
  * (-1) if no new line found
  *
  */
-static int	is_new_line(int start_index, char *buffer)
+static int	is_new_line(char *buffer)
 {
-	while (buffer[start_index] != '\0')
-		start_index++;
-	if (buffer[start_index] == '\0')
-		return (start_index);
+	int start;
+
+	start = 0;
+	while (start < BUFFER_SIZE + 1 && buffer[start] != '\0')
+		start++;
+	printf("Position of the NL char is %d, content under it: %c\n", start, buffer[start]);
+	if (start != BUFFER_SIZE && buffer[start] == '\0')
+		return (start);
 	else
 		return (-1);
 }

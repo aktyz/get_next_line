@@ -33,7 +33,7 @@ int	main(void)
 		if (next_line == NULL)
 			break ;
 		count++;
-		printf("[%d]:\"%s\"\n", count, next_line);
+		//printf("[%d]:\"%s\"\n", count, next_line);
 		free(next_line);
 		next_line = NULL;
 	}
