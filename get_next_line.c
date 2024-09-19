@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h> // printf
 
 
 char			*get_next_line(int fd);
@@ -25,6 +26,7 @@ char			*get_next_line(int fd)
 	size_t		buffer_size;
 	int			nl_position;
 	int			buffer_position;
+	char		*laddle;
 
 	buffer_size = BUFFER_SIZE * 42 + 1;
 	nl_position = -1;
@@ -32,16 +34,22 @@ char			*get_next_line(int fd)
 	buffer = ft_calloc((int) buffer_size, sizeof(char));
 	if(buffer == NULL)
 		return (NULL);
-	while (nl_position != -1)
+	printf("\nBefore starting the while loop:\n\tbuffer is: \"%s\"\n\tbuffer_position is %d\n\tbuffer_size is: %ld\n\n\n", buffer,
+		buffer_position, buffer_size);
+	while (nl_position == -1)
 	{
 		if (buffer_position == (int) buffer_size)
 		{
 			buffer = ft_change_mem_size(buffer, buffer_size, buffer_size * 2);
 			buffer_size = buffer_size * 2;
 		}
-		ft_strappend(buffer, laddle_from_fd(fd), buffer_position);
-		nl_position = ft_is_new_line(buffer, buffer_position, BUFFER_SIZE);
+		laddle = laddle_from_fd(fd);
+		printf("Laddle got from the file: \"%s\"\n", laddle);
+		ft_strappend(buffer, laddle, buffer_position);
+		nl_position = ft_is_new_line(buffer, buffer_position, buffer_position + BUFFER_SIZE);
 		buffer_position = buffer_position + BUFFER_SIZE;
+		printf("After appending it to the buffer:\n\tbuffer is: \"%s\"\n\tbuffer_position is %d\n\tbuffer_size is: %ld\n\n\n", buffer,
+			buffer_position, buffer_size);
 	}
 	//Move part of the return string after the NL sign to the static variable - and return new line
 	return ((char *)ft_return_line(buffer, buffer_size, nl_position));

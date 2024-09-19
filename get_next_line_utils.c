@@ -15,7 +15,7 @@
 
 void	*ft_calloc(size_t nmemb, size_t size);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size, int start);
-int		ft_is_new_line(char *buffer, int start, size_t buffer_size);
+int		ft_is_new_line(char *buffer, int start, size_t size_to_check);
 
 /**
  * Function allocates a necessary memory part, intended to
@@ -62,7 +62,7 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size, int start)
 	i = 0;
 	if (i < size)
 	{
-		while (i < size - 1 && src[i] != '\0')
+		while (i < size - 1)
 		{
 			dst[i] = src[start];
 			i++;
@@ -79,12 +79,16 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size, int start)
  * Returning the position of NL or
  * (-1) if no new line found.
  */
-int	ft_is_new_line(char *buffer, int start, size_t buffer_size)
+int	ft_is_new_line(char *buffer, int start, size_t size_to_check)
 {
-	while (start < (int) buffer_size + 1 && buffer[start] - '\0' == 0)
+	while (start < (int) size_to_check + 1 && buffer[start] - 13 != 0)
+	{
+		printf("\nLookinf for the NL:\n\tstart is %d\n\tsize_to check is %ld\n\tbuffer[start] is '%c'\n\n",
+			start, size_to_check, buffer[start]);
 		start++;
-	printf("Position of the NL char is %d, content under it: %c\n", start, buffer[start]);
-	if (start != (int) buffer_size && buffer[start] - '\0' == 0)
+	}
+	printf("\nPosition of the NL char is %d,\n\tcontent under it: '%c'\n", start, buffer[start]);
+	if (start != (int) size_to_check && buffer[start] - 13 != 0)
 		return (start);
 	else
 		return (-1);
