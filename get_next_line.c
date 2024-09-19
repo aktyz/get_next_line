@@ -15,16 +15,16 @@
 
 char			*get_next_line(int fd);
 static char		*laddle_from_fd(int fd);
-static int		ft_is_new_line(char *buffer, int start, t_size buffer_size);
+static int		ft_is_new_line(char *buffer, int start, size_t buffer_size);
 static int		ft_charcmp(char char1, char char2);
 static void		ft_strappend(char *buffer, char *laddle, int start_position);
 static char		*ft_change_mem_size(char *old_buffer, size_t old_size, size_t new_size);
-char			*ft_return_line(char *buffer, t_size buffer_size, int nl_position);
+char			*ft_return_line(char *buffer, size_t buffer_size, int nl_position);
 
 char			*get_next_line(int fd)
 {
 	static char	*buffer;
-	t_size		buffer_size;
+	size_t		buffer_size;
 	int			nl_position;
 	int			buffer_position;
 
@@ -32,11 +32,11 @@ char			*get_next_line(int fd)
 	nl_position = -1;
 	buffer_position = 0;
 	buffer = ft_calloc((int) buffer_size, sizeof(char));
-	if(buffer_size == NULL)
+	if(buffer == NULL)
 		return (NULL);
 	while (nl_position != -1)
 	{
-		if (buffer_position == buffer_size)
+		if (buffer_position == (int) buffer_size)
 		{
 			buffer = ft_change_mem_size(buffer, buffer_size, buffer_size * 2);
 			buffer_size = buffer_size * 2;
@@ -46,7 +46,7 @@ char			*get_next_line(int fd)
 		buffer_position = buffer_position + BUFFER_SIZE;
 	}
 	//Move part of the return string after the NL sign to the static variable - and return new line
-	return (ft_return_line(buffer, buffer_size, nl_position));
+	return ((char *)ft_return_line(buffer, buffer_size, nl_position));
 }
 
 /**
@@ -85,7 +85,7 @@ static char	*ft_change_mem_size(char *old_buffer, size_t old_size, size_t new_si
 		return (NULL);
 	ft_strlcpy(new_buffer, old_buffer, (int) old_size, 0);
 	return (free(old_buffer), new_buffer);
-}*/
+}
 
 /**
  * Function scans the buffer searching for NL char position.
@@ -93,12 +93,12 @@ static char	*ft_change_mem_size(char *old_buffer, size_t old_size, size_t new_si
  * Returning the position of NL or
  * (-1) if no new line found.
  */
-static int	ft_is_new_line(char *buffer, int start, t_size buffer_size)
+static int	ft_is_new_line(char *buffer, int start, size_t buffer_size)
 {
-	while (start < buffer_size + 1 && ft_charcmp(buffer[start],'\0'))
+	while (start < (int) buffer_size + 1 && ft_charcmp(buffer[start],'\0'))
 		start++;
 	printf("Position of the NL char is %d, content under it: %c\n", start, buffer[start]);
-	if (start != buffer_size && ft_charcmp(buffer[start],'\0'))
+	if (start != (int) buffer_size && ft_charcmp(buffer[start],'\0'))
 		return (start);
 	else
 		return (-1);
@@ -130,7 +130,7 @@ static void	ft_strappend(char *buffer, char *laddle, int start_position)
 	}
 }
 
-char	*ft_return_line(char *buffer, t_size buffer_size, int nl_position)
+char	*ft_return_line(char *buffer, size_t buffer_size, int nl_position)
 {
 	char	*to_be_returned;
 	int		new_nl_position;
@@ -138,7 +138,7 @@ char	*ft_return_line(char *buffer, t_size buffer_size, int nl_position)
 	to_be_returned = ft_calloc(nl_position, sizeof(char));
 	ft_strlcpy(to_be_returned, buffer, nl_position, 0); // MOVE THE LINE TO A DIFFERENT MEMORY PART
 	new_nl_position = ft_is_new_line(buffer, nl_position + 1, BUFFER_SIZE); // CALCULATE THE END OF REST IN THE BIG BUFFER
-	ft_strlcpy(buffer, buffer, new_nl_position - nl_position); // MOVE THE REST TO THE BEGINING OF THE BUFFER (STATIC)
+	ft_strlcpy(buffer, buffer, new_nl_position - nl_position, nl_position + 1); // MOVE THE REST TO THE BEGINING OF THE BUFFER (STATIC)
 	buffer = ft_change_mem_size(buffer, buffer_size, BUFFER_SIZE * 42 + 1); // CHANGE THE SIZE OF THE BUFFER TO THE SIZE FROM THE get_next_line() beggining
-	return(free(to_be_returned), to_be_returned);
+	return(to_be_returned);
 }

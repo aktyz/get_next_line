@@ -21,7 +21,8 @@
 # include <unistd.h> // read
 
 size_t	ft_strlen(const char *str);
+char	*get_next_line(int fd);
 void	*ft_calloc(size_t nmemb, size_t size);
-size_t	ft_strlcpy(char *dst, const char *src, size_t size);
+size_t	ft_strlcpy(char *dst, const char *src, size_t size, int start);
 
 #endif
