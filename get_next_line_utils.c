@@ -11,9 +11,11 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h> // printf
 
 void	*ft_calloc(size_t nmemb, size_t size);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size, int start);
+int		ft_is_new_line(char *buffer, int start, size_t buffer_size);
 
 /**
  * Function allocates a necessary memory part, intended to
@@ -71,3 +73,19 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size, int start)
 	return (i);
 }
 
+/**
+ * Function scans the buffer searching for NL char position.
+ *
+ * Returning the position of NL or
+ * (-1) if no new line found.
+ */
+int	ft_is_new_line(char *buffer, int start, size_t buffer_size)
+{
+	while (start < (int) buffer_size + 1 && buffer[start] - '\0' == 0)
+		start++;
+	printf("Position of the NL char is %d, content under it: %c\n", start, buffer[start]);
+	if (start != (int) buffer_size && buffer[start] - '\0' == 0)
+		return (start);
+	else
+		return (-1);
+}

@@ -20,9 +20,8 @@
 # include <stdlib.h> // malloc free
 # include <unistd.h> // read
 
-size_t	ft_strlen(const char *str);
 char	*get_next_line(int fd);
 void	*ft_calloc(size_t nmemb, size_t size);
+int		ft_is_new_line(char *buffer, int start, size_t buffer_size);
 size_t	ft_strlcpy(char *dst, const char *src, size_t size, int start);
-
 #endif

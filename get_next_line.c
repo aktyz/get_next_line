@@ -11,15 +11,13 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h> // printf
+
 
 char			*get_next_line(int fd);
 static char		*laddle_from_fd(int fd);
-static int		ft_is_new_line(char *buffer, int start, size_t buffer_size);
-static int		ft_charcmp(char char1, char char2);
 static void		ft_strappend(char *buffer, char *laddle, int start_position);
 static char		*ft_change_mem_size(char *old_buffer, size_t old_size, size_t new_size);
-char			*ft_return_line(char *buffer, size_t buffer_size, int nl_position);
+static char		*ft_return_line(char *buffer, size_t buffer_size, int nl_position);
 
 char			*get_next_line(int fd)
 {
@@ -88,32 +86,6 @@ static char	*ft_change_mem_size(char *old_buffer, size_t old_size, size_t new_si
 }
 
 /**
- * Function scans the buffer searching for NL char position.
- *
- * Returning the position of NL or
- * (-1) if no new line found.
- */
-static int	ft_is_new_line(char *buffer, int start, size_t buffer_size)
-{
-	while (start < (int) buffer_size + 1 && ft_charcmp(buffer[start],'\0'))
-		start++;
-	printf("Position of the NL char is %d, content under it: %c\n", start, buffer[start]);
-	if (start != (int) buffer_size && ft_charcmp(buffer[start],'\0'))
-		return (start);
-	else
-		return (-1);
-}
-/**
- * Function compares two characters and returns 0 if
- * they are the same or the difference between them.
- */
-static int		ft_charcmp(char char1, char char2)
-{
-	if (char1 - char2 != 0)
-		return (char1 - char2);
-	return (0);
-}
-/**
  * Function adding laddle content in the end of the buffer,
  * starting from start_position.
  */
@@ -130,7 +102,7 @@ static void	ft_strappend(char *buffer, char *laddle, int start_position)
 	}
 }
 
-char	*ft_return_line(char *buffer, size_t buffer_size, int nl_position)
+static char	*ft_return_line(char *buffer, size_t buffer_size, int nl_position)
 {
 	char	*to_be_returned;
 	int		new_nl_position;
