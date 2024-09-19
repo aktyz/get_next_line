@@ -13,9 +13,16 @@
 #include "get_next_line.h"
 
 void	*ft_calloc(size_t nmemb, size_t size);
-static size_t	ft_strlen(const char *str);
-size_t	ft_strlcpy(char *dst, const char *src, size_t size);
+size_t	ft_strlcpy(char *dst, const char *src, size_t size, int start);
 
+/**
+ * Function allocates a necessary memory part, intended to
+ * store nmemb number of size bits variables.
+ *
+ * This memory will be zeroed.
+ *
+ * (Copied from Libft)
+ */
 void	*ft_calloc(size_t nmemb, size_t size)
 {
 	void	*ptr;
@@ -37,14 +44,21 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	return (ptr);
 }
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t size)
+/**
+ * Function copy the size of content from src to the dst memory.
+ *
+ * Function assums that the dst is at least of size.
+ *
+ * It returns number of copied chars.
+ *
+ * (Copied from Libft)
+ */
+size_t	ft_strlcpy(char *dst, const char *src, size_t size, int start)
 {
-	size_t	len;
 	size_t	i;
 
-	len = ft_strlen(src);
 	i = 0;
-	if (size)
+	if (i < size)
 	{
 		while (i < size - 1 && src[i] != '\0')
 		{
@@ -53,22 +67,6 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 		}
 		dst[i] = '\0';
 	}
-	return (len);
+	return (i);
 }
 
-/**
- * Function copied from libft, returning the length of a string
- *
- */
-static size_t	ft_strlen(const char *str)
-{
-	size_t	len;
-
-	len = 0;
-	while (*str != '\0')
-	{
-		len++;
-		str++;
-	}
-	return (len);
-}

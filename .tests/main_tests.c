@@ -29,11 +29,10 @@ int	main(void)
 	}
 	while(1)
 	{
-		next_line = try_get_next_line(fd);
+		next_line = get_next_line(fd);
 		if (next_line == NULL)
 			break ;
 		count++;
-		//printf("[%d]:\"%s\"\n", count, next_line);
 		free(next_line);
 		next_line = NULL;
 	}
