@@ -29,7 +29,7 @@ int	main(void)
 	}
 	while(1)
 	{
-		next_line = get_next_line(fd);
+		next_line = try_get_next_line(fd);
 		if (next_line == NULL)
 			break ;
 		count++;

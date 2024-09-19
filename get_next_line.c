@@ -13,13 +13,13 @@
 #include "get_next_line.h"
 #include <stdio.h> // printf
 
-char			*get_next_line(int fd);
+char			*try_get_next_line(int fd);
 static char		*laddle_from_fd(int fd);
 static int		is_new_line(char *buffer);
 static char		*new_string(char *old_string, size_t new_string_length);
-static int		ft_strcmp(char *str1, char *str2, size_t n);
+static int		ft_charcmp(char char1, char char2);
 
-char	*get_next_line(int fd)
+char	*try_get_next_line(int fd)
 {
 	static char	*basin_buffer;
 
@@ -81,28 +81,18 @@ static int	is_new_line(char *buffer)
 	int start;
 
 	start = 0;
-	while (start < BUFFER_SIZE + 1 && ft_strcmp(buffer[start],'\0', 1))
+	while (start < BUFFER_SIZE + 1 && ft_charcmp(buffer[start],'\0'))
 		start++;
 	printf("Position of the NL char is %d, content under it: %c\n", start, buffer[start]);
-	if (start != BUFFER_SIZE && ft_strcmp(buffer[start],'\0', 1))
+	if (start != BUFFER_SIZE && ft_charcmp(buffer[start],'\0'))
 		return (start);
 	else
 		return (-1);
 }
 
-static int		ft_strcmp(char *str1, char *str2, size_t n)
+static int		ft_charcmp(char char1, char char2)
 {
-	unsigned char	*s1_ptr;
-	unsigned char	*s2_ptr;
-
-	s1_ptr = (unsigned char *)str1;
-	s2_ptr = (unsigned char *)str2;
-	while (n--)
-	{
-		if (*s1_ptr != *s2_ptr)
-			return (*s1_ptr - *s2_ptr);
-		s1_ptr++;
-		s2_ptr++;
-	}
+	if (char1 - char2 != 0)
+		return (char1 - char2);
 	return (0);
 }
