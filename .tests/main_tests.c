@@ -21,7 +21,7 @@ int	main(void)
 	int		count;
 
 	count = 0;
-	fd = open("../.examples/short.txt", O_RDONLY);
+	fd = open("../.examples/short2.txt", O_RDONLY);
 	if (fd == -1)
 	{
 		printf("Error opening file!\n");
@@ -32,7 +32,7 @@ int	main(void)
 		next_line = get_next_line(fd);
 		if (next_line == NULL)
 			break ;
-		printf("\n\n--------------(%d)NL returned: \"%s\"",
+		printf("\n\n--------------(%d)NL returned: \"%s\"-------------------\n",
 			count, next_line);
 		count++;
 		free(next_line);

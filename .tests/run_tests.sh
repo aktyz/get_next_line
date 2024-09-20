@@ -14,7 +14,7 @@ cp ../get_next_line.c ./get_next_line.c
 cp ../get_next_line_utils.c ./get_next_line_utils.c
 cp ../get_next_line.h ./get_next_line.h
 
-cc -Wall -Wextra -Werror -D BUFFER_SIZE=3 *.c -o tests.out
+cc -Wall -Wextra -Werror -D BUFFER_SIZE=3 *.c -g -o tests.out
 
 valgrind --leak-check=full ./tests.out
 
