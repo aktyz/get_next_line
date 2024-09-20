@@ -88,7 +88,7 @@ int	ft_is_new_line(char *buffer, int start, size_t size_to_check)
 		start++;
 	}
 	printf("\nPosition of the NL char is %d,\n\tcontent under it: '%c'\n", start, buffer[start]);
-	if (start != (int) size_to_check && buffer[start] - 13 != 0)
+	if (start <= (int) size_to_check && buffer[start + 1] - 13 != 0)
 		return (start);
 	else
 		return (-1);

@@ -36,7 +36,7 @@ char			*get_next_line(int fd)
 		return (NULL);
 	printf("\nBefore starting the while loop:\n\tbuffer is: \"%s\"\n\tbuffer_position is %d\n\tbuffer_size is: %ld\n\n\n", buffer,
 		buffer_position, buffer_size);
-	while (nl_position == -1)
+	while (nl_position == (-1) || nl_position > buffer_position)
 	{
 		if (buffer_position == (int) buffer_size)
 		{
@@ -50,9 +50,11 @@ char			*get_next_line(int fd)
 		buffer_position = buffer_position + BUFFER_SIZE;
 		printf("After appending it to the buffer:\n\tbuffer is: \"%s\"\n\tbuffer_position is %d\n\tbuffer_size is: %ld\n\n\n", buffer,
 			buffer_position, buffer_size);
+		printf("End of while:\n\tnl_position: %d\n\tbuffer_position: %d\n\n", nl_position, buffer_position);
 	}
-	//Move part of the return string after the NL sign to the static variable - and return new line
-	return ((char *)ft_return_line(buffer, buffer_size, nl_position));
+	printf("We are breaking the loop correctly after which the segmentation fault is happening");
+	laddle = ft_return_line(buffer, buffer_size, nl_position);
+	return (laddle);
 }
 
 /**
@@ -113,12 +115,16 @@ static void	ft_strappend(char *buffer, char *laddle, int start_position)
 static char	*ft_return_line(char *buffer, size_t buffer_size, int nl_position)
 {
 	char	*to_be_returned;
+	char	*rest;
 	int		new_nl_position;
 
+	printf("\n\n\nDo we enter here?\n\n\n");
 	to_be_returned = ft_calloc(nl_position, sizeof(char));
 	ft_strlcpy(to_be_returned, buffer, nl_position, 0); // MOVE THE LINE TO A DIFFERENT MEMORY PART
 	new_nl_position = ft_is_new_line(buffer, nl_position + 1, BUFFER_SIZE); // CALCULATE THE END OF REST IN THE BIG BUFFER
-	ft_strlcpy(buffer, buffer, new_nl_position - nl_position, nl_position + 1); // MOVE THE REST TO THE BEGINING OF THE BUFFER (STATIC)
+	rest = ft_calloc(new_nl_position - nl_position + 1, sizeof(char));
+	ft_strlcpy(rest, buffer, new_nl_position - nl_position, nl_position + 1); // MOVE THE REST TO THE BEGINING OF THE BUFFER (STATIC)
 	buffer = ft_change_mem_size(buffer, buffer_size, BUFFER_SIZE * 42 + 1); // CHANGE THE SIZE OF THE BUFFER TO THE SIZE FROM THE get_next_line() beggining
+	ft_strlcpy(buffer, rest, new_nl_position - nl_position, 0);
 	return(to_be_returned);
 }
