@@ -18,7 +18,6 @@ char			*get_next_line(int fd);
 static char		*laddle_from_fd(int fd);
 static void		ft_strappend(char *buffer, char *laddle, int start_position);
 static char		*ft_change_mem_size(char *old_buffer, size_t old_size, size_t new_size);
-static char		*ft_return_line(char *buffer, size_t buffer_size, int nl_position);
 
 char			*get_next_line(int fd)
 {
@@ -27,15 +26,18 @@ char			*get_next_line(int fd)
 	int			nl_position;
 	int			buffer_position;
 	char		*laddle;
+	char		*to_be_returned;
+	char		*rest;
+	int			new_nl_position;
 
 	buffer_size = BUFFER_SIZE * 42 + 1;
-	nl_position = -1;
 	buffer_position = 0;
 	buffer = ft_calloc((int) buffer_size, sizeof(char));
+	nl_position = ft_is_new_line(buffer, buffer_position, buffer_size);
 	if(buffer == NULL)
 		return (NULL);
-	//printf("\nBefore starting the while loop:\n\tbuffer is: \"%s\"\n\tbuffer_position is %d\n\tbuffer_size is: %ld\n\n\n", buffer,
-		//buffer_position, buffer_size);
+	printf("\nBefore starting the while loop:\n\tbuffer is: \"%s\"\n\tbuffer_position is %d\n\tbuffer_size is: %ld\n\n\n", buffer,
+		buffer_position, buffer_size);
 	while (nl_position == (-1) || nl_position > buffer_position)
 	{
 		if (buffer_position == (int) buffer_size)
@@ -44,7 +46,7 @@ char			*get_next_line(int fd)
 			buffer_size = buffer_size * 2;
 		}
 		laddle = laddle_from_fd(fd);
-		//printf("Laddle got from the file: \"%s\"\n", laddle);
+		printf("Laddle got from the file: \"%s\"\n", laddle);
 		ft_strappend(buffer, laddle, buffer_position);
 		nl_position = ft_is_new_line(buffer, buffer_position, buffer_position + BUFFER_SIZE);
 		buffer_position = buffer_position + BUFFER_SIZE;
@@ -53,8 +55,20 @@ char			*get_next_line(int fd)
 		//printf("End of while:\n\tnl_position: %d\n\tbuffer_position: %d\n\n", nl_position, buffer_position);
 	}
 	//printf("We are breaking the loop correctly after which the segmentation fault is happening");
-	laddle = ft_return_line(buffer, buffer_size, nl_position);
-	return (laddle);
+	//printf("\n\n\nDo we enter here?\n\n\n");
+	to_be_returned = ft_calloc(nl_position, sizeof(char));
+	ft_strlcpy(to_be_returned, buffer, nl_position + 1, 0); // MOVE THE LINE TO A DIFFERENT MEMORY PART
+	printf("Looking for the NL in the BUFFER_SIZE after line returned:\n\tbuffer:\"%s\"\n\tnl_position: %d\n\tBUFFER_SIZE: %d\n\n", buffer, nl_position, BUFFER_SIZE);
+	new_nl_position = ft_is_new_line(buffer, nl_position, BUFFER_SIZE); // CALCULATE THE END OF REST IN THE BIG BUFFER
+	if(new_nl_position != (-1))
+	{
+		rest = ft_calloc(new_nl_position - nl_position + 1, sizeof(char));
+		printf("The first strlcpy went fine, arguments for the next one:\n\tnew_nl_position: %d\n\tnl_position: %d\n\trest buffor: %s\n\tbuffer: %s\n\tsize: %d\n\tstart index: %d\n\n", new_nl_position, nl_position, rest, buffer, nl_position - new_nl_position, nl_position - 1);
+		ft_strlcpy(rest, buffer, nl_position - new_nl_position, nl_position); // MOVE THE REST TO THE BEGINING OF THE BUFFER (STATIC)
+		buffer = ft_change_mem_size(buffer, buffer_size, BUFFER_SIZE * 42 + 1); // CHANGE THE SIZE OF THE BUFFER TO THE SIZE FROM THE get_next_line() beggining
+		ft_strlcpy(buffer, rest, new_nl_position - nl_position, 0);
+	}
+	return (to_be_returned);
 }
 
 /**
@@ -110,30 +124,4 @@ static void	ft_strappend(char *buffer, char *laddle, int start_position)
 		i++;
 		start_position++;
 	}
-}
-
-static char	*ft_return_line(char *buffer, size_t buffer_size, int nl_position)
-{
-	char	*to_be_returned;
-	char	*rest;
-	int		new_nl_position;
-
-	//printf("\n\n\nDo we enter here?\n\n\n");
-	to_be_returned = ft_calloc(nl_position, sizeof(char));
-	ft_strlcpy(to_be_returned, buffer, nl_position + 1, 0); // MOVE THE LINE TO A DIFFERENT MEMORY PART
-
-
-
-
-	printf("Looking for the NL in the BUFFER_SIZE after line returned:\n\tbuffer:\"%s\"\n\tnl_position: %d\n\tBUFFER_SIZE: %d\n\n", buffer, nl_position, BUFFER_SIZE);
-	new_nl_position = ft_is_new_line(buffer, nl_position, BUFFER_SIZE); // CALCULATE THE END OF REST IN THE BIG BUFFER
-	if(new_nl_position != (-1))
-	{
-		rest = ft_calloc(new_nl_position - nl_position + 1, sizeof(char));
-		printf("The first strlcpy went fine, arguments for the next one:\n\tnew_nl_position: %d\n\tnl_position: %d\n\trest buffor: %s\n\tbuffer: %s\n\tsize: %d\n\tstart index: %d\n\n", new_nl_position, nl_position, rest, buffer, nl_position - new_nl_position, nl_position - 1);
-		ft_strlcpy(rest, buffer, nl_position - new_nl_position, nl_position); // MOVE THE REST TO THE BEGINING OF THE BUFFER (STATIC)
-		buffer = ft_change_mem_size(buffer, buffer_size, BUFFER_SIZE * 42 + 1); // CHANGE THE SIZE OF THE BUFFER TO THE SIZE FROM THE get_next_line() beggining
-		ft_strlcpy(buffer, rest, new_nl_position - nl_position, 0);
-	}
-	return(to_be_returned);
 }

@@ -20,23 +20,24 @@ int	main(void)
 	char	*next_line;
 	int		count;
 
-	count = 0;
+	count = 1;
 	fd = open("../.examples/short2.txt", O_RDONLY);
 	if (fd == -1)
 	{
 		printf("Error opening file!\n");
 		return (1);
 	}
-	while(1)
+	next_line = get_next_line(fd);
+	printf("\n\n--------------(%d)NL returned: \"%s\"-------------------\n",
+		count, next_line);
+	free(next_line);
+	while(!(next_line == NULL))
 	{
 		next_line = get_next_line(fd);
-		if (next_line == NULL)
-			break ;
 		printf("\n\n--------------(%d)NL returned: \"%s\"-------------------\n",
 			count, next_line);
 		count++;
 		free(next_line);
-		next_line = NULL;
 	}
 	close(fd);
 	return (0);

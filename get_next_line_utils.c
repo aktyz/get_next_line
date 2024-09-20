@@ -58,20 +58,20 @@ void	*ft_calloc(size_t nmemb, size_t size)
 size_t	ft_strlcpy(char *dst, const char *src, size_t size, int start)
 {
 	size_t	i;
-	printf("\n\nLooking for segmentation fault - function start:\n\tdestination: \"%s\"\n\tsource: \"%s\"\n\tsize: \"%ld\"\n\tstart_index: \"%d\"\n\n", dst, src, size, start);
+	//printf("\n\nLooking for segmentation fault - function start:\n\tdestination: \"%s\"\n\tsource: \"%s\"\n\tsize: \"%ld\"\n\tstart_index: \"%d\"\n\n", dst, src, size, start);
 	i = 0;
 	if (i < size)
 	{
 		while (i < size - 1)
 		{
-			printf("While loop:\n\ti: \"%zu\"\n\tsrc[start]: \"%c\"\n\tsize: \"%ld\"\n\tstart_index: \"%d\"\n\n", i, src[start], size, start);
+			//printf("While loop:\n\ti: \"%zu\"\n\tsrc[start]: \"%c\"\n\tsize: \"%ld\"\n\tstart_index: \"%d\"\n\n", i, src[start], size, start);
 			dst[i] = src[start];
 			i++;
 			start++;
 		}
 		dst[i] = '\0';
 	}
-	printf("End of the strlcpy funciton, returning: %zu chars copied\n\n", i + 1);
+	//printf("End of the strlcpy funciton, returning: %zu chars copied\n\n", i + 1);
 	return (i);
 }
 
