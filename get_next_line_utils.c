@@ -14,8 +14,8 @@
 #include <stdio.h> // printf
 
 void	*ft_calloc(size_t nmemb, size_t size);
-size_t	ft_strlcpy(char *dst, const char *src, size_t size, int start);
-int		ft_is_new_line(char *buffer, int start, size_t size_to_check);
+size_t	ft_strlcpy(char *dst, const char *src, size_t size);
+int		ft_is_nl(char *buffer, int start, size_t size_to_check);
 
 /**
  * Function allocates a necessary memory part, intended to
@@ -53,25 +53,21 @@ void	*ft_calloc(size_t nmemb, size_t size)
  *
  * It returns number of copied chars.
  *
- * (Copied from Libft)
  */
-size_t	ft_strlcpy(char *dst, const char *src, size_t size, int start)
+size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
 	size_t	i;
-	//printf("\n\nLooking for segmentation fault - function start:\n\tdestination: \"%s\"\n\tsource: \"%s\"\n\tsize: \"%ld\"\n\tstart_index: \"%d\"\n\n", dst, src, size, start);
+
 	i = 0;
-	if (i < size)
+	if (size)
 	{
-		while (i < size - 1)
+		while (i < size && src[i] != '\0')
 		{
-			//printf("While loop:\n\ti: \"%zu\"\n\tsrc[start]: \"%c\"\n\tsize: \"%ld\"\n\tstart_index: \"%d\"\n\n", i, src[start], size, start);
-			dst[i] = src[start];
+			dst[i] = src[i];
 			i++;
-			start++;
 		}
 		dst[i] = '\0';
 	}
-	//printf("End of the strlcpy funciton, returning: %zu chars copied\n\n", i + 1);
 	return (i);
 }
 
@@ -81,17 +77,17 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size, int start)
  * Returning the position of NL or
  * (-1) if no new line found.
  */
-int	ft_is_new_line(char *buffer, int start, size_t size_to_check)
+int	ft_is_nl(char *buffer, int start, size_t size_to_check)
 {
-	while (start < (int) size_to_check + 1 && buffer[start] - 13 != 0)
+	if (buffer[start])
 	{
-		//printf("\nLookinf for the NL:\n\tstart is %d\n\tsize_to check is %ld\n\tbuffer[start] is '%c'\n\n",
-			//start, size_to_check, buffer[start]);
-		start++;
+		while (start < (int) size_to_check + 1 && buffer[start] != '\n')
+			start++;
+		if (start <= (int) size_to_check /**&& buffer[start + 1] != '\n'*/)
+			return (start);
+		else
+			return (-1);
 	}
-	//printf("\nPosition of the NL char is %d,\n\tcontent under it: '%c'\n", start, buffer[start]);
-	if (start <= (int) size_to_check && buffer[start + 1] - 13 != 0)
-		return (start);
 	else
 		return (-1);
 }

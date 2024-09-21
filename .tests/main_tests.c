@@ -20,6 +20,9 @@ int	main(void)
 	char	*next_line;
 	int		count;
 
+	ft_strlcpy_test();
+	ft_is_nl_test();
+
 	count = 1;
 	fd = open("../.examples/short2.txt", O_RDONLY);
 	if (fd == -1)
