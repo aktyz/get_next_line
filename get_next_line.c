@@ -13,86 +13,94 @@
 #include "get_next_line.h"
 #include <stdio.h> // printf
 
+char		*get_next_line(int fd);
+static char	*read_to_buffer(char *buffer, int fd);
+static char	*get_line_from_buffer(char *buffer);
+static char	*update_buffer(char *buffer);
 
-char			*get_next_line(int fd);
-static char		*laddle_from_fd(int fd);
-static int		ft_strappend(char *buffer, char *laddle, int start_position, int n);
-
-char			*get_next_line(int fd)
+char	*get_next_line(int fd)
 {
-	static t_buffer	*buffer;
-	char			*to_be_returned;
+	static char	*buffer;
+	char		*line;
 
-	buffer = ft_initialize_buffer(buffer, BUFFER_SIZE);
-	if(fd < 0 || buffer->buffer == NULL)
-		return (NULL);
-	else if (buffer->laddle == NULL)
-		return (NULL);
-	
-	if(buffer->laddle_nl != -1)
-	{
-		//here I should return again a NL in the end and update the buffer content
-	}
+	if (fd < 0 || BUFFER_SIZE < 1)
+		return (0);
+	buffer = read_to_buffer(buffer, fd);
+	if (!buffer)
+		return (0);
+	line = get_line_from_buffer(buffer);
+	buffer = update_buffer(buffer);
+	return (line);
+}
 
-	while (buffer->laddle_nl == -1)
+static char	*read_to_buffer(char *buffer, int fd)
+{
+	char	*tmp;
+	int		bytes;
+
+	tmp = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	bytes = 1;
+	if (!tmp)
+		return (0);
+	while (bytes > 0 && !ft_strchr(buffer, '\n'))
 	{
-		if (buffer->buffer_position == (int) buffer->buffer_size - 1)
-			buffer = ft_change_size_buffer(buffer, buffer->buffer_size * 2);
-		buffer->laddle = laddle_from_fd(fd);
-		if(!(buffer->laddle == NULL) && buffer->laddle_nl == -1)
+		bytes = read(fd, tmp, BUFFER_SIZE);
+		if (bytes == -1)
 		{
-			buffer->laddle_nl = ft_is_nl(buffer->laddle, 0, BUFFER_SIZE);
-			if (buffer->laddle_nl == -1)
-				buffer->buffer_position = ft_strappend(buffer->buffer, buffer->laddle, buffer->buffer_position, BUFFER_SIZE);
-			else
-			{
-				buffer->buffer_position = ft_strappend(buffer->buffer, buffer->laddle, buffer->buffer_position, BUFFER_SIZE);
-				buffer->buffer_nl = ft_is_nl(buffer->buffer, 0, buffer->buffer_position + buffer->laddle_nl);
-				to_be_returned = ft_calloc(buffer->buffer_position, sizeof(char));
-				ft_strlcpy(to_be_returned, buffer->buffer, buffer->buffer_nl, 0);
-				buffer = ft_move_rest_to_buffer(buffer);
-			}
+			if (buffer)
+				free(buffer);
+			free(tmp);
+			return (0);
 		}
-		else
-			break;
+		buffer = ft_strjoin(buffer, tmp);
 	}
-	return (to_be_returned);
+	free(tmp);
+	return (buffer);
 }
 
-/**
- * This function laddle BUFFER_SIZE string from fd,
- * checking if there's a NL in it.
- * If there is a NL it returns only the portion to the NL
- * together with NL sign
- */
-static char	*laddle_from_fd(int fd)
+static char	*get_line_from_buffer(char *buffer)
 {
-	int		bytes_read;
-	char	*laddle;
+	char	*line;
+	size_t	nl_pos;
 
-	laddle = ft_calloc (BUFFER_SIZE + 1, sizeof(char));
-	if (laddle == NULL)
-		return (NULL);
-	bytes_read = read(fd, laddle, BUFFER_SIZE);
-	if (bytes_read <= 0)
-		return (free(laddle), NULL);
-	return (laddle);
+	nl_pos = 0;
+	if (!buffer[nl_pos])
+		return (0);
+	while (buffer[nl_pos] && buffer[nl_pos] != '\n')
+		nl_pos++;
+	if (buffer[nl_pos] == '\n')
+		nl_pos++;
+	line = ft_calloc(nl_pos + 1, sizeof(char));
+	if (!line)
+		return (0);
+	while (--nl_pos + 1)
+		line[nl_pos] = buffer[nl_pos];
+	return (line);
 }
 
-/**
- * Function adding laddle content in the end of the buffer,
- * starting from buffer_start_position, appending n chars
- */
-static int	ft_strappend(char *buffer, char *laddle, int buffer_start_position, int n)
+static char	*update_buffer(char *buffer)
 {
-	int	i;
+	char	*str;
+	size_t	i;
+	size_t	j;
 
+	if (!buffer)
+		return (0);
 	i = 0;
-	while (i < n)
-	{
-		buffer[buffer_start_position] = laddle[i];
+	j = 0;
+	while (buffer[i] && buffer[i] != '\n')
 		i++;
-		buffer_start_position++;
+	if (!buffer[i])
+	{
+		free(buffer);
+		return (0);
 	}
-	return buffer_start_position;
+	i++;
+	str = ft_calloc(ft_strlen(buffer) - i + 1, sizeof(char));
+	if (!str)
+		return (0);
+	while (buffer[i])
+		str[j++] = buffer[i++];
+	free(buffer);
+	return (str);
 }

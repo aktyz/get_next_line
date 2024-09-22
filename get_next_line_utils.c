@@ -13,10 +13,11 @@
 #include "get_next_line.h"
 #include <stdio.h> // printf
 
-void	*ft_calloc(size_t nmemb, size_t size);
-t_buffer	*ft_initialize_buffer(t_buffer *buffer, int buffer_size);
-size_t	ft_strlcpy(char *dst, char *src, size_t size, int src_start);
-int		ft_is_nl(char *buffer, int start, size_t size_to_check);
+size_t		ft_strlen(const char *str);
+char		*ft_strchr(const char *s, int c);
+char		*ft_strjoin(char *s1, char *s2);
+char		*ft_strcpy(char *dest, const char *src);
+void		*ft_calloc(size_t nmemb, size_t size);
 
 /**
  * Function allocates a necessary memory part, intended to
@@ -48,91 +49,72 @@ void	*ft_calloc(size_t nmemb, size_t size)
 }
 
 /**
- * Function copy the size of content from src to the dst memory.
+ * Function returns a pointer to the first occurrence
+ * of the character c in the string s.
  *
- * Function assums that the dst is at least of size.
- *
- * It returns number of copied chars.
- *
+ * (Copied from Libft)
  */
-size_t	ft_strlcpy(char *dst, char *src, size_t size, int src_start)
+char	*ft_strchr(const char *s, int c)
+{
+	if (!s)
+		return (0);
+	while (*s != (char) c)
+	{
+		if (!*s)
+			return (0);
+		s++;
+	}
+	return ((char *)s);
+}
+
+char	*ft_strjoin(char *s1, char *s2)
+{
+	int		len_s1;
+	int		len_s2;
+	char	*ptr;
+
+	if (!s2)
+		return (0);
+	if (!s1)
+		s1 = ft_calloc(1, sizeof(char));
+	len_s1 = 0;
+	len_s2 = 0;
+	while (s1[len_s1] != '\0')
+		len_s1++;
+	while (s2[len_s2] != '\0')
+		len_s2++;
+	ptr = ft_calloc(len_s1 + len_s2 + 1, sizeof(char));
+	if (!ptr)
+		return (0);
+	ft_strcpy(ptr, s1);
+	ft_strcpy(ptr + len_s1, s2);
+	free(s1);
+	return (ptr);
+}
+
+char	*ft_strcpy(char *dest, const char *src)
 {
 	size_t	i;
+
 	i = 0;
-	if (size)
+	while (src[i] != '\0')
 	{
-		while (i < size && src[src_start] != '\0')
-		{
-			dst[i] = src[src_start];
-			src_start++;
-			i++;
-		}
-		dst[i] = '\0';
+		dest[i] = src[i];
+		i++;
 	}
-	return (i);
+	dest[i] = '\0';
+	return (dest);
 }
 
-/**
- * Function scans the buffer searching for NL char position.
- *
- * Returning the position of NL or
- * (-1) if no new line found.
- */
-int	ft_is_nl(char *buffer, int start, size_t size_to_check)
+size_t	ft_strlen(const char *str)
 {
-	if (buffer[start])
+	size_t	len;
+
+	len = 0;
+	while (*str != '\0')
 	{
-		while (start < (int) size_to_check + 1 && buffer[start] != '\n')
-			start++;
-		if (start <= (int) size_to_check /**&& buffer[start + 1] != '\n'*/)
-			return (start);
-		else
-			return (-1);
+		len++;
+		str++;
 	}
-	else
-		return (-1);
+	return (len);
 }
-
-t_buffer	*ft_initialize_buffer(t_buffer *buffer, int buffer_size)
-{
-	buffer->buffer_size = buffer_size * 42 + 1;
-	buffer->buffer = ft_calloc(buffer->buffer_size, sizeof(char));
-	buffer->laddle = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-	buffer->buffer_nl = -1;
-	buffer->laddle_nl = -1;
-	buffer->buffer_position = 0;
-	return buffer;
-}
-
-t_buffer	*ft_change_size_buffer(t_buffer *old, int new_buffer_size)
-{
-	static t_buffer *new;
-	new->buffer_size = new_buffer_size;
-	new->buffer = ft_calloc(new->buffer_size, sizeof(char));
-	new->laddle = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-	new->buffer_nl = old->buffer_nl;
-	new->laddle_nl = old->laddle_nl;
-	new->buffer_position = old->buffer_position;
-	ft_strlcpy(new->buffer, old->buffer, new->buffer_position, 0);
-	free(old->buffer);
-	free(old->laddle);
-	return (free(old), new);
-}
-
-t_buffer	*ft_move_rest_to_buffer(t_buffer *buffer)
-{
-	static t_buffer *new;
-
-	new->buffer_size = BUFFER_SIZE * 42 + 1;
-	new->buffer = ft_calloc(buffer->buffer_size, sizeof(char));
-	new->laddle = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-	ft_strlcpy(new->laddle, buffer->laddle, BUFFER_SIZE - buffer->laddle_nl, buffer->laddle_nl + 1);
-	new->buffer_nl = -1;
-	new->laddle_nl = ft_is_nl(new->laddle, 0, BUFFER_SIZE);
-	new->buffer_position = 0;
-	free(buffer->buffer);
-	free(buffer->laddle);
-	return (free(buffer), new);
-}
-
-
