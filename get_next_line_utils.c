@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h> // printf
 
 size_t		ft_strlen(const char *str);
 char		*ft_strchr(const char *s, int c);
