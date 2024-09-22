@@ -16,62 +16,45 @@
 
 char			*get_next_line(int fd);
 static char		*laddle_from_fd(int fd);
-static void		ft_strappend(char *buffer, char *laddle, int start_position, int n);
-static char		*ft_change_mem_size(char *old_buffer, size_t old_size, size_t new_size);
+static int		ft_strappend(char *buffer, char *laddle, int start_position, int n);
 
 char			*get_next_line(int fd)
 {
-	static char	*buffer;
-	size_t		buffer_size;
-	int			nl_position;
-	int			buffer_position;
-	char		*laddle;
-	char		*to_be_returned;
-	char		*rest;
-	int			new_nl_position;
-	int			laddle_nl_position;
+	static t_buffer	*buffer;
+	char			*to_be_returned;
 
-	buffer_size = BUFFER_SIZE * 42 + 1;
-	buffer_position = 0;
-	buffer = ft_calloc((int) buffer_size, sizeof(char));
-	nl_position = -1;
-	if(buffer == NULL)
+	buffer = ft_initialize_buffer(buffer, BUFFER_SIZE);
+	if(fd < 0 || buffer->buffer == NULL)
 		return (NULL);
-	printf("\nBefore starting the while loop:\n\tbuffer is: \"%s\"\n\tbuffer_position is %d\n\tbuffer_size is: %ld\n\n\n", buffer,
-		buffer_position, buffer_size);
-	while (nl_position == (-1) || nl_position > buffer_position)
+	else if (buffer->laddle == NULL)
+		return (NULL);
+	
+	if(buffer->laddle_nl != -1)
 	{
-		if (buffer_position == (int) buffer_size)
-		{
-			buffer = ft_change_mem_size(buffer, buffer_size, buffer_size * 2);
-			buffer_size = buffer_size * 2;
-		}
-		laddle = laddle_from_fd(fd);
-		printf("Laddle got from the file: \"%s\"\n", laddle);
-		if(!(laddle == NULL))
-		{
+		//here I should return again a NL in the end and update the buffer content
+	}
 
-			laddle_nl_position = ft_is_nl(laddle, 0, BUFFER_SIZE); //here we check for nl already
-			if (laddle_nl_position == -1)
+	while (buffer->laddle_nl == -1)
+	{
+		if (buffer->buffer_position == (int) buffer->buffer_size - 1)
+			buffer = ft_change_size_buffer(buffer, buffer->buffer_size * 2);
+		buffer->laddle = laddle_from_fd(fd);
+		if(!(buffer->laddle == NULL) && buffer->laddle_nl == -1)
+		{
+			buffer->laddle_nl = ft_is_nl(buffer->laddle, 0, BUFFER_SIZE);
+			if (buffer->laddle_nl == -1)
+				buffer->buffer_position = ft_strappend(buffer->buffer, buffer->laddle, buffer->buffer_position, BUFFER_SIZE);
+			else
 			{
-				ft_strappend(buffer, laddle, buffer_position, BUFFER_SIZE);
+				buffer->buffer_position = ft_strappend(buffer->buffer, buffer->laddle, buffer->buffer_position, BUFFER_SIZE);
+				buffer->buffer_nl = ft_is_nl(buffer->buffer, 0, buffer->buffer_position + buffer->laddle_nl);
+				to_be_returned = ft_calloc(buffer->buffer_position, sizeof(char));
+				ft_strlcpy(to_be_returned, buffer->buffer, buffer->buffer_nl, 0);
+				buffer = ft_move_rest_to_buffer(buffer);
 			}
-			buffer_position = buffer_position + BUFFER_SIZE;
 		}
 		else
 			break;
-	}
-	to_be_returned = ft_calloc(nl_position, sizeof(char));
-	ft_strlcpy(to_be_returned, buffer, nl_position + 1); // MOVE THE LINE TO A DIFFERENT MEMORY PART
-	printf("Looking for the NL in the BUFFER_SIZE after line returned:\n\tbuffer:\"%s\"\n\tnl_position: %d\n\tBUFFER_SIZE: %d\n\n", buffer, nl_position, BUFFER_SIZE);
-	new_nl_position = ft_is_nl(buffer, nl_position, BUFFER_SIZE); // CALCULATE THE END OF REST IN THE BIG BUFFER
-	if(new_nl_position != (-1))
-	{
-		rest = ft_calloc(new_nl_position - nl_position + 1, sizeof(char));
-		printf("The first strlcpy went fine, arguments for the next one:\n\tnew_nl_position: %d\n\tnl_position: %d\n\trest buffor: %s\n\tbuffer: %s\n\tsize: %d\n\tstart index: %d\n\n", new_nl_position, nl_position, rest, buffer, nl_position - new_nl_position, nl_position - 1);
-		ft_strlcpy(rest, buffer, nl_position - new_nl_position); // MOVE THE REST TO THE BEGINING OF THE BUFFER (STATIC)
-		buffer = ft_change_mem_size(buffer, buffer_size, BUFFER_SIZE * 42 + 1); // CHANGE THE SIZE OF THE BUFFER TO THE SIZE FROM THE get_next_line() beggining
-		ft_strlcpy(buffer, rest, new_nl_position - nl_position);
 	}
 	return (to_be_returned);
 }
@@ -96,29 +79,11 @@ static char	*laddle_from_fd(int fd)
 	return (laddle);
 }
 
-/** Function takes the previously allocated memory,
- * copies new_size of it to the newly allocated one
- * frees the memory of the larger pointer and returns
- * pointer to the new bit of memory
- *
- * TODO: change name to more appropriate
- */
-static char	*ft_change_mem_size(char *old_buffer, size_t old_size, size_t new_size)
-{
-	char	*new_buffer;
-
-	new_buffer = ft_calloc((int) new_size, sizeof(char));
-	if (new_buffer == NULL)
-		return (NULL);
-	ft_strlcpy(new_buffer, old_buffer, (int) old_size);
-	return (free(old_buffer), new_buffer);
-}
-
 /**
  * Function adding laddle content in the end of the buffer,
  * starting from buffer_start_position, appending n chars
  */
-static void	ft_strappend(char *buffer, char *laddle, int buffer_start_position, int n)
+static int	ft_strappend(char *buffer, char *laddle, int buffer_start_position, int n)
 {
 	int	i;
 
@@ -129,4 +94,5 @@ static void	ft_strappend(char *buffer, char *laddle, int buffer_start_position, 
 		i++;
 		buffer_start_position++;
 	}
+	return buffer_start_position;
 }

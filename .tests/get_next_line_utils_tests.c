@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/21 17:54:04 by zslowian          #+#    #+#             */
-/*   Updated: 2024/09/21 20:20:39 by zslowian         ###   ########.fr       */
+/*   Updated: 2024/09/22 15:06:22 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,14 @@ void    ft_strlcpy_test()
     size = BUFFER_SIZE * 42 + 1;
     dst = ft_calloc(size + 1, sizeof(char));
     printf("------------ Tests for ft_strlcpy() ------------\n\n");
-    result = ft_strlcpy(dst, "\n", 3);
+    result = ft_strlcpy(dst, "\n", 3, 0);
     if(result != 1)
         printf("\nFirst test case failed!\n");
-    ft_strlcpy(dst, "123\0\0\0", 4);
-    result = ft_strlcpy(dst, "abc", 3);
+    ft_strlcpy(dst, "123\0\0\0", 4, 0);
+    result = ft_strlcpy(dst, "abc", 3, 0);
     if(result != 3)
         printf("\nSecond test case failed!\n");
-    ft_strlcpy(dst, "\0\0\0\0\0\0\0\0", 6);
+    ft_strlcpy(dst, "\0\0\0\0\0\0\0\0", 6, 0);
     
     printf("------------ Tests for fft_strlcpy() finished ------------\n\n");
     free(dst);
@@ -47,36 +47,36 @@ void    ft_is_nl_test()
     size_to_check = 3;
     buffer = ft_calloc(size_to_check + 1, sizeof(char));
     printf("------------ Tests for ft_is_nl() ------------\n\n");
-    ft_strlcpy(buffer, "e\n\n", 3);
+    ft_strlcpy(buffer, "e\n\n", 3, 0);
     result = ft_is_nl(buffer, 0, size_to_check);
     if(result != 1)
         printf("\nFirst test case failed!\n");
-    ft_strlcpy(buffer, "\0\0\0\0", 4);
-    ft_strlcpy(buffer, "My ", 3);
+    ft_strlcpy(buffer, "\0\0\0\0", 4, 0);
+    ft_strlcpy(buffer, "My ", 3, 0);
     result = ft_is_nl(buffer, 0, size_to_check);
     if(result != -1)
         printf("\nSecond test case failed!\n");
-    ft_strlcpy(buffer, "\0\0\0\0", 4);
-    ft_strlcpy(buffer, "M", 3);
+    ft_strlcpy(buffer, "\0\0\0\0", 4, 0);
+    ft_strlcpy(buffer, "M", 3, 0);
     result = ft_is_nl(buffer, 0, size_to_check);
     if(result != -1)
         printf("\nThird test case failed!\n");
-    ft_strlcpy(buffer, "\0\0\0\0", 4);
-    ft_strlcpy(buffer, "", 3);
+    ft_strlcpy(buffer, "\0\0\0\0", 4, 0);
+    ft_strlcpy(buffer, "", 3, 0);
     result = ft_is_nl(buffer, 0, size_to_check);
     if(result != -1)
         printf("\nFourth test case failed!\n");
-    ft_strlcpy(buffer, "\0\0\0\0", 4);
-    ft_strlcpy(buffer, "\n\n\n", 3);
+    ft_strlcpy(buffer, "\0\0\0\0", 4, 0);
+    ft_strlcpy(buffer, "\n\n\n", 3, 0);
     result = ft_is_nl(buffer, 0, size_to_check);
     if(result != 0)
         printf("\nFifth test case failed!\n");
-    ft_strlcpy(buffer, "\0\0\0\0", 4);
-    ft_strlcpy(buffer, "!!\n", 3);
+    ft_strlcpy(buffer, "\0\0\0\0", 4, 0);
+    ft_strlcpy(buffer, "!!\n", 3, 0);
     result = ft_is_nl(buffer, 0, size_to_check);
     if(result != 2)
         printf("\nSixth test case failed!\n");
-    ft_strlcpy(buffer, "\0\0\0\0", 4);
+    ft_strlcpy(buffer, "\0\0\0\0", 4, 0);
     result = ft_is_nl(buffer, 0, size_to_check);
     if(result != -1)
         printf("\nSeventh test case failed!\n");

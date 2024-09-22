@@ -14,7 +14,8 @@
 #include <stdio.h> // printf
 
 void	*ft_calloc(size_t nmemb, size_t size);
-size_t	ft_strlcpy(char *dst, const char *src, size_t size);
+t_buffer	*ft_initialize_buffer(t_buffer *buffer, int buffer_size);
+size_t	ft_strlcpy(char *dst, char *src, size_t size, int src_start);
 int		ft_is_nl(char *buffer, int start, size_t size_to_check);
 
 /**
@@ -54,16 +55,16 @@ void	*ft_calloc(size_t nmemb, size_t size)
  * It returns number of copied chars.
  *
  */
-size_t	ft_strlcpy(char *dst, const char *src, size_t size)
+size_t	ft_strlcpy(char *dst, char *src, size_t size, int src_start)
 {
 	size_t	i;
-
 	i = 0;
 	if (size)
 	{
-		while (i < size && src[i] != '\0')
+		while (i < size && src[src_start] != '\0')
 		{
-			dst[i] = src[i];
+			dst[i] = src[src_start];
+			src_start++;
 			i++;
 		}
 		dst[i] = '\0';
@@ -91,3 +92,47 @@ int	ft_is_nl(char *buffer, int start, size_t size_to_check)
 	else
 		return (-1);
 }
+
+t_buffer	*ft_initialize_buffer(t_buffer *buffer, int buffer_size)
+{
+	buffer->buffer_size = buffer_size * 42 + 1;
+	buffer->buffer = ft_calloc(buffer->buffer_size, sizeof(char));
+	buffer->laddle = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	buffer->buffer_nl = -1;
+	buffer->laddle_nl = -1;
+	buffer->buffer_position = 0;
+	return buffer;
+}
+
+t_buffer	*ft_change_size_buffer(t_buffer *old, int new_buffer_size)
+{
+	static t_buffer *new;
+	new->buffer_size = new_buffer_size;
+	new->buffer = ft_calloc(new->buffer_size, sizeof(char));
+	new->laddle = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	new->buffer_nl = old->buffer_nl;
+	new->laddle_nl = old->laddle_nl;
+	new->buffer_position = old->buffer_position;
+	ft_strlcpy(new->buffer, old->buffer, new->buffer_position, 0);
+	free(old->buffer);
+	free(old->laddle);
+	return (free(old), new);
+}
+
+t_buffer	*ft_move_rest_to_buffer(t_buffer *buffer)
+{
+	static t_buffer *new;
+
+	new->buffer_size = BUFFER_SIZE * 42 + 1;
+	new->buffer = ft_calloc(buffer->buffer_size, sizeof(char));
+	new->laddle = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	ft_strlcpy(new->laddle, buffer->laddle, BUFFER_SIZE - buffer->laddle_nl, buffer->laddle_nl + 1);
+	new->buffer_nl = -1;
+	new->laddle_nl = ft_is_nl(new->laddle, 0, BUFFER_SIZE);
+	new->buffer_position = 0;
+	free(buffer->buffer);
+	free(buffer->laddle);
+	return (free(buffer), new);
+}
+
+
