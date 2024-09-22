@@ -19,14 +19,6 @@ char		*ft_strjoin(char *s1, char *s2);
 char		*ft_strcpy(char *dest, const char *src);
 void		*ft_calloc(size_t nmemb, size_t size);
 
-/**
- * Function allocates a necessary memory part, intended to
- * store nmemb number of size bits variables.
- *
- * This memory will be zeroed.
- *
- * (Copied from Libft)
- */
 void	*ft_calloc(size_t nmemb, size_t size)
 {
 	void	*ptr;
@@ -48,12 +40,6 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	return (ptr);
 }
 
-/**
- * Function returns a pointer to the first occurrence
- * of the character c in the string s.
- *
- * (Copied from Libft)
- */
 char	*ft_strchr(const char *s, int c)
 {
 	if (!s)

@@ -27,6 +27,4 @@ char		*ft_strcpy(char *dest, const char *src);
 void		*ft_calloc(size_t nmemb, size_t size);
 char		*get_next_line(int fd);
 
-//void    ft_is_nl_test();
-//void    ft_strlcpy_test();
 #endif
