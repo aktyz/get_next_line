@@ -24,7 +24,7 @@ int	main(void)
 	//ft_is_nl_test();
 
 	count = 1;
-	fd = open("../.examples/second.txt", O_RDONLY);
+	fd = open("../.examples/43_no_nl", O_RDONLY);
 	if (fd == -1)
 	{
 		printf("Error opening file!\n");

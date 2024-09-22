@@ -52,7 +52,8 @@ static char	*read_to_buffer(char *buffer, int fd)
 			free(tmp);
 			return (0);
 		}
-		buffer = ft_strjoin(buffer, tmp);
+		if (bytes)
+			buffer = ft_strjoin(buffer, tmp);
 	}
 	free(tmp);
 	return (buffer);

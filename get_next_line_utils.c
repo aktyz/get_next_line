@@ -58,6 +58,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	int		len_s1;
 	int		len_s2;
 	char	*ptr;
+	int		i;
 
 	if (!s2)
 		return (0);
@@ -65,6 +66,7 @@ char	*ft_strjoin(char *s1, char *s2)
 		s1 = ft_calloc(1, sizeof(char));
 	len_s1 = 0;
 	len_s2 = 0;
+	i = 0;
 	while (s1[len_s1] != '\0')
 		len_s1++;
 	while (s2[len_s2] != '\0')
@@ -75,6 +77,11 @@ char	*ft_strjoin(char *s1, char *s2)
 	ft_strcpy(ptr, s1);
 	ft_strcpy(ptr + len_s1, s2);
 	free(s1);
+	while (s2[i] != '\0')
+	{
+		s2[i] = '\0';
+		i++;
+	}
 	return (ptr);
 }
 
