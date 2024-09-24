@@ -20,16 +20,16 @@ void		*ft_memset(void *s, int c, size_t n);
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
+	static char	*buffer[1024];
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE < 1)
 		return (0);
-	buffer = read_to_buffer(buffer, fd);
-	if (!buffer)
+	buffer[fd] = read_to_buffer(buffer[fd], fd);
+	if (!buffer[fd])
 		return (0);
-	line = get_line_from_buffer(buffer);
-	buffer = update_buffer(buffer);
+	line = get_line_from_buffer(buffer[fd]);
+	buffer[fd] = update_buffer(buffer[fd]);
 	return (line);
 }
 
