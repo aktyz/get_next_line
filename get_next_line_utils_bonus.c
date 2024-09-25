@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 size_t		ft_strlen(const char *str);
 char		*ft_strchr(const char *s, int c);
@@ -68,8 +68,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	len_s2 = ft_strlen(s2);
 	while (s2[len_s2] != '\0')
 		len_s2++;
-	ptr = 0;
-	//ptr = ft_calloc(len_s1 + len_s2 + 1, sizeof(char));
+	ptr = ft_calloc(len_s1 + len_s2 + 1, sizeof(char));
 	if (!ptr)
 	{
 		free(s1);

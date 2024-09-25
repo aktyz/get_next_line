@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+//#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 #include <stdio.h> // printf
 #include <fcntl.h> // open
 
@@ -19,9 +20,6 @@ int	main(void)
 	int		fd;
 	char	*next_line;
 	int		count;
-
-	ft_strlcpy_test();
-	ft_is_nl_test();
 
 	count = 1;
 	fd = open("../.examples/short2.txt", O_RDONLY);

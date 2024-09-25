@@ -70,7 +70,10 @@ char	*ft_strjoin(char *s1, char *s2)
 		len_s2++;
 	ptr = ft_calloc(len_s1 + len_s2 + 1, sizeof(char));
 	if (!ptr)
+	{
+		free(s1);
 		return (0);
+	}
 	ft_strcpy(ptr, s1);
 	ft_strcpy(ptr + len_s1, s2);
 	ft_memset(s2, '\0', len_s2);
